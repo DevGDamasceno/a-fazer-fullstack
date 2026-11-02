@@ -1,5 +1,7 @@
 # A Fazer
 
+[![CI](https://github.com/DevGDamasceno/a-fazer-fullstack/actions/workflows/ci.yml/badge.svg)](https://github.com/DevGDamasceno/a-fazer-fullstack/actions/workflows/ci.yml)
+
 Aplicação web de lista de tarefas com **cadastro e login de usuários**: cada pessoa vê e gerencia apenas as próprias tarefas. O back-end é uma API REST em **C# / ASP.NET Core** e o front-end é feito em **React**.
 
 Projeto de portfólio, criado para praticar autenticação com JWT, acesso a dados com Entity Framework Core, testes de integração e uma interface responsiva com modo claro e escuro.
@@ -143,5 +145,5 @@ dotnet tool run dotnet-ef migrations add NomeDaMigration --project src/TodoApi
 
 - [ ] Paginação e ordenação na listagem
 - [ ] Testes do front-end (Vitest + Testing Library)
-- [ ] GitHub Actions rodando os testes a cada push
+- [x] GitHub Actions rodando os testes e o build do front a cada push
 - [ ] Campo de descrição na interface (a API já suporta)
