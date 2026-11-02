@@ -230,8 +230,24 @@ button.complete {
   color: var(--muted);
 }
 
+.demo-note p {
+  margin: 0 0 8px;
+}
+
+.demo-note p:last-child {
+  margin-bottom: 0;
+}
+
 .demo-note a {
   color: var(--accent);
+}
+
+.demo-note code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  user-select: all;
 }
 
 @media (max-width: 480px) {

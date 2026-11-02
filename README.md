@@ -93,6 +93,12 @@ Fora do ambiente de desenvolvimento a API **não inicia sem a variável de ambie
 
 O GitHub Pages só hospeda páginas estáticas, então a API em C# não roda lá. Por isso a versão publicada usa um **modo demo**: o front troca as chamadas HTTP por uma API simulada (`web/src/demoApi.js`) que guarda tudo no `localStorage` do navegador. Quem cria uma conta já recebe algumas tarefas de exemplo.
 
+**Conta de teste** (para entrar sem se cadastrar, também mostrada na tela de login da demo):
+
+| E-mail | Senha |
+|---|---|
+| `demo@afazer.com` | `Demo12345` |
+
 - Os dados ficam só no navegador de quem usa e podem ser perdidos ao limpar os dados do site.
 - É uma simulação para demonstrar a interface. A autenticação real com JWT, o banco e as regras de validação estão na API, que roda localmente (veja [Como executar](#como-executar)).
 - O modo demo só é ativado pelos scripts abaixo; o uso normal com a API não muda.

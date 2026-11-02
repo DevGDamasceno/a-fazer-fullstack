@@ -1,4 +1,5 @@
 import { ApiError } from './apiError'
+import { DEMO_EMAIL, DEMO_PASSWORD } from './demoConfig'
 import { getToken } from './token'
 
 // API simulada para o modo demo (GitHub Pages): mesma interface da API real, mas os dados
@@ -64,32 +65,48 @@ function validateTitle(title) {
   return trimmed
 }
 
+// Cria o usuário (com as tarefas de exemplo) no objeto do banco; quem chama é que salva.
+async function addUser(db, email, password) {
+  const user = { id: db.nextUserId++, email, passwordHash: await hash(email, password) }
+  db.users.push(user)
+  for (const sample of SAMPLE_TODOS) {
+    db.todos.push({
+      id: db.nextTodoId++,
+      userId: user.id,
+      description: null,
+      createdAt: new Date().toISOString(),
+      ...sample,
+    })
+  }
+  return user
+}
+
+// Carrega o banco garantindo que a conta de teste exista (primeira visita ou dados limpos).
+async function loadDb() {
+  const db = load()
+  if (!db.users.some((u) => u.email === DEMO_EMAIL)) {
+    await addUser(db, DEMO_EMAIL, DEMO_PASSWORD)
+    save(db)
+  }
+  return db
+}
+
 export const demoApi = {
   async register(rawEmail, password) {
     const email = rawEmail.trim().toLowerCase()
     validateCredentials(email, password)
 
-    const db = load()
+    const db = await loadDb()
     if (db.users.some((u) => u.email === email)) throw new ApiError(409, 'E-mail já cadastrado.')
 
-    const user = { id: db.nextUserId++, email, passwordHash: await hash(email, password) }
-    db.users.push(user)
-    for (const sample of SAMPLE_TODOS) {
-      db.todos.push({
-        id: db.nextTodoId++,
-        userId: user.id,
-        description: null,
-        createdAt: new Date().toISOString(),
-        ...sample,
-      })
-    }
+    const user = await addUser(db, email, password)
     save(db)
     return tokenFor(user)
   },
 
   async login(rawEmail, password) {
     const email = rawEmail.trim().toLowerCase()
-    const db = load()
+    const db = await loadDb()
     const user = db.users.find((u) => u.email === email)
     if (!user || user.passwordHash !== (await hash(email, password))) throw new ApiError(401, 'Não autorizado.')
     return tokenFor(user)

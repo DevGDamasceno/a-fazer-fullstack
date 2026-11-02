@@ -66,7 +66,7 @@ export default function Login({ onAuthenticated }) {
         {isRegister ? 'Já tenho conta' : 'Criar uma conta'}
       </button>
 
-      <DemoNote />
+      <DemoNote showCredentials />
     </main>
   )
 }
