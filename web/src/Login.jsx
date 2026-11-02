@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { api } from './api'
+import DemoNote from './DemoNote'
 
 export default function Login({ onAuthenticated }) {
   const [mode, setMode] = useState('login')
@@ -64,6 +65,8 @@ export default function Login({ onAuthenticated }) {
       >
         {isRegister ? 'Já tenho conta' : 'Criar uma conta'}
       </button>
+
+      <DemoNote />
     </main>
   )
 }

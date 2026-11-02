@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/DevGDamasceno/a-fazer-fullstack/actions/workflows/ci.yml/badge.svg)](https://github.com/DevGDamasceno/a-fazer-fullstack/actions/workflows/ci.yml)
 
+**[▶ Ver a demo online](https://devgdamasceno.github.io/a-fazer-fullstack/)** (os dados ficam salvos só no seu navegador, veja [Modo demo](#modo-demo))
+
 Aplicação web de lista de tarefas com **cadastro e login de usuários**: cada pessoa vê e gerencia apenas as próprias tarefas. O back-end é uma API REST em **C# / ASP.NET Core** e o front-end é feito em **React**.
 
 Projeto de portfólio, criado para praticar autenticação com JWT, acesso a dados com Entity Framework Core, testes de integração e uma interface responsiva com modo claro e escuro.
@@ -44,6 +46,7 @@ Projeto de portfólio, criado para praticar autenticação com JWT, acesso a dad
 | Documentação | Swagger / OpenAPI (Swashbuckle) |
 | Testes | xUnit, `WebApplicationFactory` (testes de integração) |
 | Front-end | React 19, Vite, JavaScript, CSS puro |
+| CI e demo | GitHub Actions, GitHub Pages |
 
 ## Pré-requisitos
 
@@ -86,6 +89,22 @@ VITE_API_URL=http://localhost:5000 npm run dev
 
 Fora do ambiente de desenvolvimento a API **não inicia sem a variável de ambiente `Jwt__Key`** (mínimo 32 caracteres), de propósito, para nunca rodar com uma chave fraca.
 
+## Modo demo
+
+O GitHub Pages só hospeda páginas estáticas, então a API em C# não roda lá. Por isso a versão publicada usa um **modo demo**: o front troca as chamadas HTTP por uma API simulada (`web/src/demoApi.js`) que guarda tudo no `localStorage` do navegador. Quem cria uma conta já recebe algumas tarefas de exemplo.
+
+- Os dados ficam só no navegador de quem usa e podem ser perdidos ao limpar os dados do site.
+- É uma simulação para demonstrar a interface. A autenticação real com JWT, o banco e as regras de validação estão na API, que roda localmente (veja [Como executar](#como-executar)).
+- O modo demo só é ativado pelos scripts abaixo; o uso normal com a API não muda.
+
+```bash
+cd web
+npm run dev:demo     # roda a interface em modo demo, sem precisar da API
+npm run build:demo   # gera o build usado no GitHub Pages
+```
+
+A publicação é feita pelo workflow `.github/workflows/pages.yml` a cada push na `main` que altere `web/`. Para ativá-la uma vez: no repositório, **Settings → Pages → Source: GitHub Actions**.
+
 ## Testes
 
 ```bash
@@ -117,6 +136,7 @@ Os testes de integração sobem a API de verdade, com um banco SQLite temporári
 - **Mesma resposta no login** para e-mail inexistente e senha errada, para não permitir descobrir quais e-mails estão cadastrados.
 - **Chave JWT lida por `IOptions`:** o `TokenService` (que emite) e a validação (que verifica) leem a mesma configuração, então nunca divergem.
 - **SQLite:** não exige servidor de banco, o que deixa o projeto fácil de clonar e rodar. A string de conexão fica na configuração, e o EF Core permite trocar de banco com poucas mudanças.
+- **API simulada na demo:** o front acessa a API por um único objeto (`api`). No build do Pages ele aponta para a versão simulada, e o código das telas não muda. O build normal nem inclui o código da demo.
 - **Token no `localStorage`:** escolha simples para o escopo do projeto. Um cenário de produção exigiria avaliar cookies `HttpOnly` por causa de XSS.
 
 ## Estrutura
@@ -140,10 +160,3 @@ docs/screenshots/       imagens usadas neste README
 dotnet tool restore
 dotnet tool run dotnet-ef migrations add NomeDaMigration --project src/TodoApi
 ```
-
-## Próximos passos
-
-- [ ] Paginação e ordenação na listagem
-- [ ] Testes do front-end (Vitest + Testing Library)
-- [x] GitHub Actions rodando os testes e o build do front a cada push
-- [ ] Campo de descrição na interface (a API já suporta)

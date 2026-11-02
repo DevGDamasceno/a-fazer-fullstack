@@ -1,15 +1,12 @@
-const TOKEN_KEY = 'todo-token'
+import { ApiError } from './apiError'
+import { demoApi } from './demoApi'
+import { getToken } from './token'
 
-export const getToken = () => localStorage.getItem(TOKEN_KEY)
-export const setToken = (token) => localStorage.setItem(TOKEN_KEY, token)
-export const clearToken = () => localStorage.removeItem(TOKEN_KEY)
+export { ApiError }
+export { clearToken, getToken, setToken } from './token'
 
-export class ApiError extends Error {
-  constructor(status, message) {
-    super(message)
-    this.status = status
-  }
-}
+// No build do GitHub Pages (modo "demo") não existe servidor: a API é simulada no navegador.
+export const isDemo = import.meta.env.VITE_DEMO === 'true'
 
 // Transforma as respostas de erro da API (400 com "errors", 409 com "error") em uma mensagem legível.
 async function errorMessage(response) {
@@ -39,7 +36,7 @@ async function request(path, { method = 'GET', body } = {}) {
   return response.status === 204 ? null : response.json()
 }
 
-export const api = {
+const httpApi = {
   register: (email, password) => request('/auth/register', { method: 'POST', body: { email, password } }),
   login: (email, password) => request('/auth/login', { method: 'POST', body: { email, password } }),
   listTodos: (completed) =>
@@ -48,3 +45,5 @@ export const api = {
   updateTodo: (id, todo) => request(`/todos/${id}`, { method: 'PUT', body: todo }),
   deleteTodo: (id) => request(`/todos/${id}`, { method: 'DELETE' }),
 }
+
+export const api = isDemo ? demoApi : httpApi

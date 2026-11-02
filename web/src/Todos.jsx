@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { api } from './api'
+import DemoNote from './DemoNote'
 
 const FILTERS = [
   { label: 'Todas', value: undefined },
@@ -184,6 +185,8 @@ export default function Todos({ onLogout }) {
           ))}
         </ul>
       )}
+
+      <DemoNote />
     </main>
   )
 }
